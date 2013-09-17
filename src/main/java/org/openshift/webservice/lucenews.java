@@ -18,11 +18,22 @@ public class lucenews {
 	
 	QueryHandler queryHandler = new QueryHandler();
 	
+	//TODO why does injection work here but not in QueryHandler
+	@Inject
+	private FileHandler fileHandler;
+	
+	@GET()
+	@Produces("application/json")
+	public List getAllParks(){
+		ArrayList allParksList = new ArrayList();
+		return allParksList;
+	}
+	
 	@GET()
 	@Produces("application/json")
     public List findParksWithin(@QueryParam("lat1") float lat1, @QueryParam("lon1") float lon1, @QueryParam("lat2") float lat2, @QueryParam("lon2") float lon2){
         
-		List allParksList = queryHandler.getABoxOfPoints(lon2, lon1, lat2, lat1);
+		List allParksList = queryHandler.getABoxOfPoints(lon2, lon1, lat2, lat1, fileHandler);
 		
 	    return allParksList;
 	}

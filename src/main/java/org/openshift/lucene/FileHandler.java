@@ -32,8 +32,8 @@ public class FileHandler {
 		try {
 			Directory directory = new SimpleFSDirectory(new File(indexLocation));
 			IndexReader indexReader = DirectoryReader.open(directory);
-			indexSearcher = new IndexSearcher(indexReader);	
-			
+			this.indexSearcher = new IndexSearcher(indexReader);	
+			System.out.println("something about indexsearcher:: " + indexSearcher.toString());
 		} catch (Exception e){
 			System.out.println("Exception Opening directory:" + e.getClass() + " :: " + e.getMessage());			
 		}
@@ -41,7 +41,7 @@ public class FileHandler {
 	}
 
 	public IndexSearcher getIndexSearcher() {
-		return indexSearcher;
+		return this.indexSearcher;
 	}
 	
 	public String getMessage(){
