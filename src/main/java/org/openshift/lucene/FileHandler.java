@@ -16,13 +16,24 @@ import org.apache.lucene.store.SimpleFSDirectory;
 @ApplicationScoped
 public class FileHandler {
 	
-	private String indexLocation = "/home/spousty/git/lucenespatial/src/main/webapp/WEB-INF/indexDir";
+	private String indexLocation = null;
 	
 	IndexSearcher indexSearcher = null;
 
 	public FileHandler() {
 		super();
 		System.out.println("Constructor");
+		
+		String datadir = System.getenv("OPENSHIFT_DATA_DIR");
+        
+        if (datadir == null || "".equals(datadir)){
+        	//we are NOT on OpenShift
+        	this.indexLocation = "/home/spousty/git/lucenespatial/src/main/webapp/WEB-INF/indexDir";
+        	
+        } else {
+        	this.indexLocation = datadir + "indexDir"
+;        }
+		//TODO pull the index location depending on if we are on Openshift or not
 		
 	}
 	
