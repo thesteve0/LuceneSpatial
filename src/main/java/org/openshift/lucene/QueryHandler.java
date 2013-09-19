@@ -22,6 +22,8 @@ import org.apache.lucene.spatial.query.SpatialOperation;
 
 import com.spatial4j.core.context.SpatialContext;
 import com.spatial4j.core.shape.Shape;
+import com.spatial4j.core.shape.impl.CircleImpl;
+import com.spatial4j.core.shape.impl.PointImpl;
 import com.spatial4j.core.shape.impl.RectangleImpl;
 
 public class QueryHandler {
@@ -81,6 +83,61 @@ public class QueryHandler {
 		} catch (Exception e) {
 			System.out.println("Exception searching: " + e.getClass() + " :: " + e.getMessage());
 		}
+		return allParksList;
+	}
+	
+///////////get parks near a coord  ?lat=37.5&lon=-83.0 and a radius in degrees
+	public List getParksNear(double lat, double lon, double radius, FileHandler fileHandler){
+		ArrayList<Map> allParksList = new ArrayList<Map>();
+		
+		//ok time to make some spatial stuff
+		//Gonna make a circle to do our search
+		Shape ourCircle =  new CircleImpl(new PointImpl(lon,  lat,  spatialContext), radius, spatialContext);
+		
+		//ok now to make a spatial args
+		SpatialArgs spatialArgs = new SpatialArgs(SpatialOperation.Intersects, ourCircle);
+		
+		Filter filter = strategy.makeFilter(spatialArgs);
+		IndexSearcher searcher = fileHandler.getIndexSearcher();
+		
+		
+		try {
+			
+			IndexSearcher searcher = fileHandler.getIndexSearcher();
+			
+			TopDocs returnedDocs  = searcher.search(new MatchAllDocsQuery(), searcher.getIndexReader().numDocs());
+			int numDoc = returnedDocs.totalHits;
+			
+			
+			for (int i = 0; i < numDoc; i++){
+				Document doc1 = searcher.doc(returnedDocs.scoreDocs[i].doc); 
+				//System.out.println("some doc stuff: " + doc1.toString());
+				//put the name in the hashmap
+				HashMap park = new HashMap();
+				park.put("name", doc1.get("name"));
+				
+				//now get the coords and put them in an array list
+				ArrayList<Float> coords = new ArrayList<Float>();
+				String coordinates = doc1.get("coords");
+				String[] coordinateArray = coordinates.split(" ");
+				
+				//TODO check these are in the right order given leaflet
+				coords.add(new Float(coordinateArray[0]));
+				coords.add(new Float(coordinateArray[1]));
+				
+				park.put("position", coords);
+
+				System.out.println("just to add a debug");
+				
+				allParksList.add(park);
+			}
+			
+			
+		} catch (Exception e) {
+			System.out.println("Exception searching: " + e.getClass() + " :: " + e.getMessage());
+		}
+
+		
 		return allParksList;
 	}
 	

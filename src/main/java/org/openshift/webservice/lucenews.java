@@ -35,6 +35,20 @@ public class lucenews {
 	
 	@GET()
 	@Produces("application/json")
+	@Path("near")
+	public List findParksNear(@QueryParam("lat") float lat, @QueryParam("lon") float lon){
+		ArrayList<Map> allParksList = new ArrayList<Map>();
+		
+		//how big a radius search
+		double distance = 1.5;
+		
+		allParksList = (ArrayList) queryHandler.getParksNear(lat, lon, fileHandler);
+		
+		return allParksList;
+	}
+	
+	@GET()
+	@Produces("application/json")
 	@Path("within")
     public List findParksWithin(@QueryParam("lat1") float lat1, @QueryParam("lon1") float lon1, @QueryParam("lat2") float lat2, @QueryParam("lon2") float lon2){
         
