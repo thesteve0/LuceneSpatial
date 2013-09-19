@@ -103,7 +103,6 @@ public class QueryHandler {
 		
 		try {
 			
-			IndexSearcher searcher = fileHandler.getIndexSearcher();
 			
 			TopDocs returnedDocs  = searcher.search(new MatchAllDocsQuery(), searcher.getIndexReader().numDocs());
 			int numDoc = returnedDocs.totalHits;

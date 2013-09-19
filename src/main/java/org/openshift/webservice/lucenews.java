@@ -42,7 +42,7 @@ public class lucenews {
 		//how big a radius search
 		double distance = 1.5;
 		
-		allParksList = (ArrayList) queryHandler.getParksNear(lat, lon, fileHandler);
+		allParksList = (ArrayList) queryHandler.getParksNear(lat, lon, distance, fileHandler);
 		
 		return allParksList;
 	}
