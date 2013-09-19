@@ -22,7 +22,6 @@ public class FileHandler {
 
 	public FileHandler() {
 		super();
-		System.out.println("Constructor");
 		
 		String datadir = System.getenv("OPENSHIFT_DATA_DIR");
         
@@ -31,9 +30,8 @@ public class FileHandler {
         	this.indexLocation = "/home/spousty/git/lucenespatial/src/main/webapp/WEB-INF/indexDir";
         	
         } else {
-        	this.indexLocation = datadir + "indexDir"
-;        }
-		//TODO pull the index location depending on if we are on Openshift or not
+        	this.indexLocation = datadir + "indexDir";
+    	}
 		
 	}
 	
@@ -43,8 +41,7 @@ public class FileHandler {
 		try {
 			Directory directory = new SimpleFSDirectory(new File(indexLocation));
 			IndexReader indexReader = DirectoryReader.open(directory);
-			this.indexSearcher = new IndexSearcher(indexReader);	
-			System.out.println("something about indexsearcher:: " + indexSearcher.toString());
+			this.indexSearcher = new IndexSearcher(indexReader);			
 		} catch (Exception e){
 			System.out.println("Exception Opening directory:" + e.getClass() + " :: " + e.getMessage());			
 		}

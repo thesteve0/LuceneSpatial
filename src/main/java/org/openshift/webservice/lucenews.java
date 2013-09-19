@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 import javax.persistence.UniqueConstraint;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -23,29 +24,45 @@ public class lucenews {
 	@Inject
 	private FileHandler fileHandler;
 	
+	///////////get parks near a coord  circle?lat=37.5&lon=-83.0&radius=3 and a radius in degrees
 	@GET()
 	@Produces("application/json")
-	public List getAllParks(){
-		ArrayList allParksList = new ArrayList();
+	@Path("circle")
+	public List findParksNear(@QueryParam("lat") float lat, @QueryParam("lon") float lon, @QueryParam("radius")float radius){
+		ArrayList<Map> allParksList = new ArrayList<Map>();
 		
-		allParksList = (ArrayList) queryHandler.getAllParks(fileHandler);
+			
+		allParksList = (ArrayList) queryHandler.getParksNear(lat, lon, radius, fileHandler);
 		
 		return allParksList;
 	}
 	
+	///////////get parks near a coord sorted by distance nearpoint?lat=37.5&lon=-83.0&number=10 number of results to return
 	@GET()
 	@Produces("application/json")
-	@Path("near")
-	public List findParksNear(@QueryParam("lat") float lat, @QueryParam("lon") float lon){
+	@Path("nearpoint")
+	public List findNumNear(@QueryParam("lat") float lat, @QueryParam("lon") float lon, @QueryParam("number")int numberResults){
 		ArrayList<Map> allParksList = new ArrayList<Map>();
 		
-		//how big a radius search
-		double distance = 1.5;
-		
-		allParksList = (ArrayList) queryHandler.getParksNear(lat, lon, distance, fileHandler);
+			
+		allParksList = (ArrayList) queryHandler.getNumNear(lat, lon, numberResults, fileHandler);
 		
 		return allParksList;
 	}
+	
+	//Now handle a distance and string query - going to return all the results in sorted distance order
+	//nearpoint/washington?lat=37.5&lon=-83.0
+	@GET()
+	@Produces("application/json")
+	@Path("nearpoint/{name}")
+	public List findNameNear(@PathParam("name") String name, @QueryParam("lat") float lat, @QueryParam("lon") float lon){
+		ArrayList<Map> allParksList = new ArrayList<Map>();
+		
+		allParksList = (ArrayList) queryHandler.getNameNear(lat, lon, name, fileHandler);
+		
+		return allParksList;
+	}
+	
 	
 	@GET()
 	@Produces("application/json")
@@ -55,5 +72,15 @@ public class lucenews {
 		List allParksList = queryHandler.getABoxOfPoints(lon2, lon1, lat2, lat1, fileHandler);
 		
 	    return allParksList;
+	}
+	
+	@GET()
+	@Produces("application/json")
+	public List getAllParks(){
+		ArrayList allParksList = new ArrayList();
+		
+		allParksList = (ArrayList) queryHandler.getAllParks(fileHandler);
+		
+		return allParksList;
 	}
 }
